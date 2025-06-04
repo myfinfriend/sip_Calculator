@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIP Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: #f2f2f7;
+            color: #1c1c1e;
+            line-height: 1.4;
+            padding: 20px 16px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 375px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 32px 24px 24px;
+            background: linear-gradient(135deg, #007AFF, #5856D6);
+            color: white;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+        
+        .header p {
+            opacity: 0.8;
+            font-size: 15px;
+            font-weight: 400;
+        }
+        
+        .form-section {
+            padding: 24px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-size: 15px;
+            font-weight: 500;
+            color: #1c1c1e;
+            margin-bottom: 8px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 16px;
+            font-size: 17px;
+            font-weight: 400;
+            border: 1px solid #d1d1d6;
+            border-radius: 12px;
+            background: #ffffff;
+            transition: all 0.2s ease;
+            -webkit-appearance: none;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #007AFF;
+            box-shadow: 0 0 0 3px rgba(0,122,255,0.1);
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            color: white;
+            background: #007AFF;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 24px;
+        }
+        
+        .calculate-btn:hover {
+            background: #0056CC;
+        }
+        
+        .calculate-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .results {
+            background: linear-gradient(135deg, #FF9500, #FF6B35);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            color: white;
+        }
+        
+        .result-main {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .result-main h3 {
+            font-size: 15px;
+            font-weight: 500;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+        
+        .result-main .amount {
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .result-item {
+            text-align: center;
+            padding: 16px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .result-item .label {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+        
+        .result-item .value {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .breakdown {
+            margin-top: 20px;
+        }
+        
+        .breakdown h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            opacity: 0.9;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: rgba(255,255,255,0.8);
+            border-radius: 3px;
+            transition: width 0.6s ease;
+        }
+        
+        .breakdown-text {
+            font-size: 13px;
+            opacity: 0.8;
+            text-align: center;
+        }
+        
+        .goals {
+            background: #f2f2f7;
+            border-radius: 16px;
+            padding: 20px;
+        }
+        
+        .goals h3 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1c1c1e;
+        }
+        
+        .goal-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e5ea;
+        }
+        
+        .goal-item:last-child {
+            border-bottom: none;
+        }
+        
+        .goal-info {
+            flex: 1;
+        }
+        
+        .goal-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: #1c1c1e;
+            margin-bottom: 2px;
+        }
+        
+        .goal-amount {
+            font-size: 13px;
+            color: #8e8e93;
+        }
+        
+        .goal-status {
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .achieved {
+            background: #d1f2eb;
+            color: #00a86b;
+        }
+        
+        .partial {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .pending {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        @media (max-width: 400px) {
+            body {
+                padding: 16px 12px;
+            }
+            
+            .container {
+                max-width: 100%;
+            }
+            
+            .header {
+                padding: 24px 20px 20px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .form-section {
+                padding: 20px;
+            }
+            
+            .result-main .amount {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SIP Calculator</h1>
+            <p>Plan your wealth journey</p>
+        </div>
+        
+        <div class="form-section">
+            <div class="input-group">
+                <label for="amount">Monthly Investment (₹)</label>
+                <input type="number" id="amount" value="5000" min="500" max="100000">
+            </div>
+            
+            <div class="input-group">
+                <label for="rate">Expected Return (% per year)</label>
+                <input type="number" id="rate" value="12" min="1" max="30" step="0.1">
+            </div>
+            
+            <div class="input-group">
+                <label for="years">Investment Period (Years)</label>
+                <input type="number" id="years" value="15" min="1" max="50">
+            </div>
+            
+            <button class="calculate-btn" onclick="calculate()">Calculate</button>
+            
+            <div class="results">
+                <div class="result-main">
+                    <h3>Maturity Value</h3>
+                    <div class="amount" id="maturityAmount">₹25.2 L</div>
+                </div>
+                
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="label">Total Invested</div>
+                        <div class="value" id="totalInvested">₹9 L</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">Total Returns</div>
+                        <div class="value" id="totalReturns">₹16.2 L</div>
+                    </div>
+                </div>
+                
+                <div class="breakdown">
+                    <h3>Investment vs Returns</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 64%;"></div>
+                    </div>
+                    <div class="breakdown-text" id="breakdownText">
+                        64% returns, 36% investment
+                    </div>
+                </div>
+            </div>
+            
+            <div class="goals">
+                <h3>Financial Goals</h3>
+                <div class="goal-item">
+                    <div class="goal-info">
+                        <div class="goal-name">🏠 Home Purchase</div>
+                        <div class="goal-amount">₹50,00,000 target</div>
+                    </div>
+                    <div class="goal-status pending" id="homeGoal">50% there</div>
+                </div>
+                <div class="goal-item">
+                    <div class="goal-info">
+                        <div class="goal-name">🎓 Child Education</div>
+                        <div class="goal-amount">₹25,00,000 target</div>
+                    </div>
+                    <div class="goal-status achieved" id="educationGoal">Achieved</div>
+                </div>
+                <div class="goal-item">
+                    <div class="goal-info">
+                        <div class="goal-name">🏖️ Retirement</div>
+                        <div class="goal-amount">₹1,00,00,000 target</div>
+                    </div>
+                    <div class="goal-status partial" id="retirementGoal">25% there</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const monthlyAmount = parseFloat(document.getElementById('amount').value) || 5000;
+            const annualRate = parseFloat(document.getElementById('rate').value) || 12;
+            const years = parseInt(document.getElementById('years').value) || 15;
+            
+            const monthlyRate = annualRate / 12 / 100;
+            const totalMonths = years * 12;
+            
+            // SIP Future Value calculation
+            const maturityValue = monthlyAmount * (Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate * (1 + monthlyRate);
+            const totalInvestment = monthlyAmount * totalMonths;
+            const totalReturns = maturityValue - totalInvestment;
+            
+            // Update display
+            document.getElementById('maturityAmount').textContent = formatAmount(maturityValue);
+            document.getElementById('totalInvested').textContent = formatAmount(totalInvestment);
+            document.getElementById('totalReturns').textContent = formatAmount(totalReturns);
+            
+            // Update progress bar
+            const returnsPercentage = (totalReturns / maturityValue) * 100;
+            document.getElementById('progressFill').style.width = returnsPercentage + '%';
+            document.getElementById('breakdownText').textContent = 
+                `${Math.round(returnsPercentage)}% returns, ${Math.round(100 - returnsPercentage)}% investment`;
+            
+            // Update goals status
+            updateGoals(maturityValue);
+        }
+        
+        function updateGoals(maturityValue) {
+            const homeTarget = 5000000; // 50L
+            const educationTarget = 2500000; // 25L
+            const retirementTarget = 10000000; // 1Cr
+            
+            updateGoalStatus('homeGoal', maturityValue, homeTarget);
+            updateGoalStatus('educationGoal', maturityValue, educationTarget);
+            updateGoalStatus('retirementGoal', maturityValue, retirementTarget);
+        }
+        
+        function updateGoalStatus(goalId, currentValue, targetValue) {
+            const element = document.getElementById(goalId);
+            const percentage = Math.min((currentValue / targetValue) * 100, 100);
+            
+            if (percentage >= 100) {
+                element.textContent = 'Achieved';
+                element.className = 'goal-status achieved';
+            } else if (percentage >= 50) {
+                element.textContent = `${Math.round(percentage)}% there`;
+                element.className = 'goal-status partial';
+            } else {
+                element.textContent = `${Math.round(percentage)}% there`;
+                element.className = 'goal-status pending';
+            }
+        }
+        
+        function formatAmount(amount) {
+            if (amount >= 10000000) {
+                return `₹${(amount / 10000000).toFixed(1)} Cr`;
+            } else if (amount >= 100000) {
+                return `₹${(amount / 100000).toFixed(1)} L`;
+            } else if (amount >= 1000) {
+                return `₹${(amount / 1000).toFixed(0)}K`;
+            } else {
+                return `₹${Math.round(amount).toLocaleString('en-IN')}`;
+            }
+        }
+        
+        // Auto-calculate on input change
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', calculate);
+        });
+        
+        // Initialize
+        calculate();
+    </script>
+</body>
+</html>
